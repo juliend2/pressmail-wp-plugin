@@ -513,10 +513,25 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
     $mail_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
  
     write_log('Envoi du email...');
-
+    // $api_token = 
     // Send!
     try {
         // $send = $phpmailer->send();
+        // wp_remote_post( "https://my.statusmachine.com/api/v1/wp_notify?token=".$api_token,
+	    wp_remote_post("http://0.0.0.0:9292/api/v1/send-email",
+            array(
+                'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
+                'body' => json_encode(
+                    array(
+                        'to' => $to,
+                        'subject' => $subject,
+                        'body' => $message,
+                    )
+                ),
+                'method'      => 'POST',
+                'data_format' => 'body',
+            )
+        );
         $send = true;
 
         write_log('Envoi du email... TRY!');
