@@ -85,22 +85,22 @@ function pressmail_settings_init(  ) {
 
     if (!get_option('pressmail_settings')) {
         add_option( 'pressmail_settings', [
-            'pressmail_text_field_0' => ''
+            'pressmail_field_sender_key' => ''
         ]);
     }
 	register_setting( 'pm_settings', 'pressmail_settings' );
 
 	add_settings_section(
 		'pressmail_pm_settings_section', 
-		__( 'Your section description', 'pressmail' ), 
+		__( 'Pressmail Plugin Settings', 'pressmail' ), 
 		'pressmail_settings_section_callback', 
 		'pm_settings'
 	);
 
 	add_settings_field( 
-		'pressmail_text_field_0', 
-		__( 'Settings field description', 'pressmail' ), 
-		'pressmail_text_field_0_render', 
+		'pressmail_field_sender_key', 
+		__( 'Sender Key', 'pressmail' ), 
+		'pressmail_field_sender_key_render', 
 		'pm_settings', 
 		'pressmail_pm_settings_section' 
 	);
@@ -109,12 +109,13 @@ function pressmail_settings_init(  ) {
 }
 
 
-function pressmail_text_field_0_render(  ) { 
+function pressmail_field_sender_key_render(  ) { 
 
 	$options = get_option( 'pressmail_settings' );
     // var_dump($options);
 	?>
-	<input type='text' name='pressmail_settings[pressmail_text_field_0]' value='<?php echo $options['pressmail_text_field_0']; ?>'>
+	<input type='text' name='pressmail_settings[pressmail_field_sender_key]' value='<?php echo $options['pressmail_field_sender_key']; ?>' placeholder="a0b1c2d3e4f5...">
+    <p>Find it in <a href="https://www.pressmail.co/profile/" target="_blank">your user's profile</a></p>
 	<?php
 
 }
@@ -122,7 +123,7 @@ function pressmail_text_field_0_render(  ) {
 
 function pressmail_settings_section_callback(  ) { 
 
-	echo __( 'This section description', 'pressmail' );
+	// echo __( 'This section description', 'pressmail' );
 
 }
 
@@ -169,6 +170,7 @@ run_pressmail();
 
 
 
+if (!function_exists('wp_mail')) {
 // Pluggable function... Plugged:
 function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
     // Compact the input, apply the filters, and extract them back out.
@@ -573,7 +575,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
         return false;
     }
 }
-
+} // END function_exists( 'wp_mail' )
 
 
 if (!function_exists('write_log')) {
