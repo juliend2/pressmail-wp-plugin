@@ -370,7 +370,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
      * See https://core.trac.wordpress.org/ticket/5007.
      */
     if ( ! isset( $from_email ) ) {
-        $from_email = 'pressmail@word.pressmail.co';
+        $from_email = 'sender@pressmail.co';
     }
  
     /**
@@ -513,6 +513,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
     // do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
  
     $mail_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
+
+    $options = get_option('pressmail_settings');
+    $api_token = $options['pressmail_field_sender_key'];
  
     write_log('Envoi du email...');
     // $api_token = 
@@ -520,26 +523,25 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
     try {
         // $send = $phpmailer->send();
         // wp_remote_post( "https://my.statusmachine.com/api/v1/wp_notify?token=".$api_token,
-	    wp_remote_post("http://0.0.0.0:9292/api/v1/send-email",
-            array(
-                'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
-                'body' => json_encode(
-                    array(
-                        'to' => $to,
-                        'subject' => $subject,
-                        'body' => $message,
-                    )
-                ),
+	    wp_remote_post("https://api.pressmail.co/api/v1/send",
+            [
+                'headers' => [
+                    'Authorization' => "Bearer ".$api_token,
+                ],
+                'body' => [
+                    'to' => $to,
+                    'subject' => $subject,
+                    'body' => $message,
+                ],
                 'method'      => 'POST',
-                'data_format' => 'body',
-            )
+                // 'data_format' => 'body',
+            ]
         );
         $send = true;
 
         write_log('Envoi du email... TRY!');
         write_log('to: '. print_r($to, 1));
         write_log('subject: '. $subject);
-        write_log('message: '. $message);
         write_log('message: '. $message);
  
         /**
