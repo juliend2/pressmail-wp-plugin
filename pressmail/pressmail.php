@@ -521,6 +521,12 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
     // $api_token = 
     // Send!
     try {
+        $body = [
+            'to' => $to,
+            'subject' => $subject,
+            'body' => $message,
+            'content_type' => $content_type,
+        ];
         // $send = $phpmailer->send();
         // wp_remote_post( "https://my.statusmachine.com/api/v1/wp_notify?token=".$api_token,
 	    wp_remote_post("https://api.pressmail.co/api/v1/send",
@@ -528,11 +534,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
                 'headers' => [
                     'Authorization' => "Bearer ".$api_token,
                 ],
-                'body' => [
-                    'to' => $to,
-                    'subject' => $subject,
-                    'body' => $message,
-                ],
+                'body' => $body,
                 'method'      => 'POST',
                 // 'data_format' => 'body',
             ]
