@@ -173,8 +173,6 @@ run_pressmail();
 if (!function_exists('wp_mail')) {
 // Pluggable function... Plugged:
 function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-    // Compact the input, apply the filters, and extract them back out.
- 
     /**
      * Filters the wp_mail() arguments.
      *
@@ -245,19 +243,6 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
     if ( ! is_array( $attachments ) ) {
         $attachments = explode( "\n", str_replace( "\r\n", "\n", $attachments ) );
     }
-    // global $phpmailer;
- 
-    // (Re)create it, if it's gone missing.
-    // if ( ! ( $phpmailer instanceof PHPMailer\PHPMailer\PHPMailer ) ) {
-    //     require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
-    //     require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
-    //     require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
-    //     $phpmailer = new PHPMailer\PHPMailer\PHPMailer( true );
- 
-    //     $phpmailer::$validator = static function ( $email ) {
-    //         return (bool) is_email( $email );
-    //     };
-    // }
  
     // Headers.
     $cc       = array();
@@ -349,14 +334,6 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
         }
     }
  
-    // Empty out the values that may be set.
-    // $phpmailer->clearAllRecipients();
-    // $phpmailer->clearAttachments();
-    // $phpmailer->clearCustomHeaders();
-    // $phpmailer->clearReplyTos();
- 
-    // Set "From" name and email.
- 
     // If we don't have a name from the input headers.
     if ( ! isset( $from_name ) ) {
         $from_name = 'Pressmail';
@@ -390,53 +367,9 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
      * @param string $from_name Name associated with the "from" email address.
      */
     $from_name = apply_filters( 'wp_mail_from_name', $from_name );
-  
-    // // Set mail's subject and body.
-    // $phpmailer->Subject = $subject;
-    // $phpmailer->Body    = $message;
  
     // Set destination addresses, using appropriate methods for handling addresses.
     $address_headers = compact( 'to', 'cc', 'bcc', 'reply_to' );
- 
-    foreach ( $address_headers as $address_header => $addresses ) {
-        if ( empty( $addresses ) ) {
-            continue;
-        }
- 
-        foreach ( (array) $addresses as $address ) {
-            // try {
-            //     // Break $recipient into name and address parts if in the format "Foo <bar@baz.com>".
-            //     $recipient_name = '';
- 
-            //     if ( preg_match( '/(.*)<(.+)>/', $address, $matches ) ) {
-            //         if ( count( $matches ) == 3 ) {
-            //             $recipient_name = $matches[1];
-            //             $address        = $matches[2];
-            //         }
-            //     }
- 
-            //     switch ( $address_header ) {
-            //         case 'to':
-            //             $phpmailer->addAddress( $address, $recipient_name );
-            //             break;
-            //         case 'cc':
-            //             $phpmailer->addCc( $address, $recipient_name );
-            //             break;
-            //         case 'bcc':
-            //             $phpmailer->addBcc( $address, $recipient_name );
-            //             break;
-            //         case 'reply_to':
-            //             $phpmailer->addReplyTo( $address, $recipient_name );
-            //             break;
-            //     }
-            // } catch ( PHPMailer\PHPMailer\Exception $e ) {
-            //     continue;
-            // }
-        }
-    }
- 
-    // Set to use PHP's mail().
-    // $phpmailer->isMail();
  
     // Set Content-Type and charset.
  
@@ -454,13 +387,6 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
      */
     $content_type = apply_filters( 'wp_mail_content_type', $content_type );
  
-    // $phpmailer->ContentType = $content_type;
- 
-    // Set whether it's plaintext, depending on $content_type.
-    if ( 'text/html' === $content_type ) {
-        // $phpmailer->isHTML( true );
-    }
- 
     // If we don't have a charset from the input headers.
     if ( ! isset( $charset ) ) {
         $charset = get_bloginfo( 'charset' );
@@ -473,62 +399,30 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
      *
      * @param string $charset Default email charset.
      */
-    // $phpmailer->CharSet = apply_filters( 'wp_mail_charset', $charset );
+    $charset = apply_filters( 'wp_mail_charset', $charset );
  
     // Set custom headers.
-    // if ( ! empty( $headers ) ) {
-    //     foreach ( (array) $headers as $name => $content ) {
-    //         // Only add custom headers not added automatically by PHPMailer.
-    //         if ( ! in_array( $name, array( 'MIME-Version', 'X-Mailer' ), true ) ) {
-    //             try {
-    //                 $phpmailer->addCustomHeader( sprintf( '%1$s: %2$s', $name, $content ) );
-    //             } catch ( PHPMailer\PHPMailer\Exception $e ) {
-    //                 continue;
-    //             }
-    //         }
-    //     }
- 
-    //     if ( false !== stripos( $content_type, 'multipart' ) && ! empty( $boundary ) ) {
-    //         $phpmailer->addCustomHeader( sprintf( 'Content-Type: %s; boundary="%s"', $content_type, $boundary ) );
-    //     }
-    // }
- 
-    if ( ! empty( $attachments ) ) {
-        foreach ( $attachments as $attachment ) {
-            // try {
-            //     $phpmailer->addAttachment( $attachment );
-            // } catch ( PHPMailer\PHPMailer\Exception $e ) {
-            //     continue;
-            // }
+    if ( ! empty( $headers ) ) {
+        if ( false !== stripos( $content_type, 'multipart' ) && ! empty( $boundary ) ) {
+            // $phpmailer->addCustomHeader( sprintf( 'Content-Type: %s; boundary="%s"', $content_type, $boundary ) );
+            $headers['Content-Type'] = sprintf( '%s; boundary="%s"', $content_type, $boundary );
         }
     }
- 
-    /**
-     * Fires after PHPMailer is initialized.
-     *
-     * @since 2.2.0
-     *
-     * @param PHPMailer $phpmailer The PHPMailer instance (passed by reference).
-     */
-    // do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
- 
+
     $mail_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
 
     $options = get_option('pressmail_settings');
     $api_token = $options['pressmail_field_sender_key'];
  
-    write_log('Envoi du email...');
-    // $api_token = 
     // Send!
     try {
         $body = [
+            'headers' => $headers,
             'to' => $to,
             'subject' => $subject,
             'body' => $message,
             'content_type' => $content_type,
         ];
-        // $send = $phpmailer->send();
-        // wp_remote_post( "https://my.statusmachine.com/api/v1/wp_notify?token=".$api_token,
 	    wp_remote_post("https://api.pressmail.co/api/v1/send",
             [
                 'headers' => [
@@ -536,16 +430,10 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
                 ],
                 'body' => $body,
                 'method'      => 'POST',
-                // 'data_format' => 'body',
             ]
         );
         $send = true;
 
-        write_log('Envoi du email... TRY!');
-        write_log('to: '. print_r($to, 1));
-        write_log('subject: '. $subject);
-        write_log('message: '. $message);
- 
         /**
          * Fires after PHPMailer has successfully sent a mail.
          *
@@ -562,9 +450,6 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
         return $send;
     } catch ( Exception $e ) {
         $mail_data['pressmail_exception_code'] = $e->getCode();
-
-        write_log('Envoi du email... CATCH!');
-        write_log($e);
 
         /**
          * Fires after a PHPMailer\PHPMailer\Exception is caught.
