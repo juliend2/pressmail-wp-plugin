@@ -67,6 +67,15 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-pressmail.php';
 
 
 
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'add_action_links' );
+
+function add_action_links ( $actions ) {
+   $mylinks = array(
+      '<a href="' . admin_url( 'options-general.php?page=pressmail' ) . '">Settings</a>',
+   );
+   $actions = array_merge( $mylinks, $actions );
+   return $actions;
+}
 
 // COPY PASTED:
 add_action( 'admin_menu', 'pressmail_add_admin_menu' );
