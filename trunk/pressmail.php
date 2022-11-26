@@ -123,7 +123,7 @@ function pressmail_field_sender_key_render(  ) {
 	$options = get_option( 'pressmail_settings' );
     // var_dump($options);
 	?>
-	<input type='text' name='pressmail_settings[pressmail_field_sender_key]' value='<?php echo $options['pressmail_field_sender_key']; ?>' placeholder="a0b1c2d3e4f5...">
+	<input type='text' name='pressmail_settings[pressmail_field_sender_key]' value='<?php echo esc_attr($options['pressmail_field_sender_key']); ?>' placeholder="a0b1c2d3e4f5...">
     <p>Find it in <a href="https://www.pressmail.co/profile/" target="_blank">your user's profile</a></p>
 	<?php
 
