@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: jdesrosiers
+Contributors: pressmail, jdesrosiers
 Tags: mail, wp_mail, api
 Requires at least: 6.0.1
 Tested up to: 6.0.1
@@ -11,7 +11,7 @@ The easiest way to send emails with WordPress
 
 == Description ==
 
-Send emails via Pressmail's API, for a professional grade email delivery.
+The simplest way to send emails from your WordPress site. No SMTP or DNS to manage.
 
 **Note**: to use this plugin, you will need to first create an account on [pressmail.co](https://www.pressmail.co).
 
