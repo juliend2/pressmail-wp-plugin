@@ -15,6 +15,8 @@ The simplest way to send emails from your WordPress site. No SMTP or DNS to mana
 
 **Note**: to use this plugin, you will need to first create an account on [pressmail.co](https://www.pressmail.co). See our [terms of service](https://www.pressmail.co/terms-of-service/).
 
+How it works:
+
 1. Get your API key
 1. Install this plugin
 1. Let us handle the rest
