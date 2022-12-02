@@ -1,5 +1,8 @@
-DEST=/var/www/html/wordpress/wp-content/plugins/
+DEST=/home/julien/Workbench/pressmail/wp-site/wp-content/pressmail-wp-plugin/
 
-default:
-	sudo cp -r ./pressmail $(DEST)
-	sudo chown -R www-data:www-data $(DEST)
+# default:
+# 	sudo chown -R www-data:www-data ./trunk
+
+svn:
+	cp -r ./trunk/* $(DEST)trunk/
+	cp -r ./assets/* $(DEST)assets/
