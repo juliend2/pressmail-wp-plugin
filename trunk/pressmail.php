@@ -423,7 +423,7 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
             'body' => $message,
             'content_type' => $content_type,
         ];
-	    wp_remote_post("https://api.pressmail.co/api/v1/send",
+	    wp_remote_post(PM_API_BASE_URL."/send",
             [
                 'headers' => [
                     'Authorization' => "Bearer ".$api_token,
