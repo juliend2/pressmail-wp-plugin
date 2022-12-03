@@ -9,7 +9,7 @@
  * Plugin Name:       Pressmail
  * Plugin URI:        https://pressmail.co/
  * Description:       The simplest way to send emails from your WordPress site. No SMTP or DNS to manage.
- * Version:           1.0.0
+ * Version:           1.0.1
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       pressmail
@@ -26,7 +26,9 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PRESSMAIL_VERSION', '1.0.0' );
+define( 'PRESSMAIL_VERSION', '1.0.1' );
+
+define( 'PM_API_BASE_URL', 'https://api.pressmail.co/api/v1' );
 
 /**
  * The code that runs during plugin activation.
